@@ -1,8 +1,13 @@
 class CommentsController < ApplicationController
   def create
-    comment = Comment.create(comment_params)
-    redirect_to "/prototypes/#{comment.prototype.id}"  # コメントと結びつくツイートの詳細画面に遷移す
-    
+    @comment = Comment.new(comment_params)
+    if @comment.save
+      redirect_to prototype_comments_path(@comment.prototype.id)
+    else
+      @prototype = @comment.prototype
+      @comments = @prototype.comments
+      render "prototypes/show"
+    end
   end
 
   private
